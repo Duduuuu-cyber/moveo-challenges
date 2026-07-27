@@ -22,33 +22,40 @@ export function useMovies() {
     return isNaN(year) ? 0 : year;
   };
 
-  // Fetch single page
+  // Fetch single page with 3-second timeout fallback
   const fetchPage = useCallback(async (page: number) => {
     setLoading(true);
     setError(null);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
     try {
-      const response = await fetch(`${API_BASE_URL}?page=${page}`);
+      const response = await fetch(`${API_BASE_URL}?page=${page}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data: PaginatedMovieResponse = await response.json();
-      const moviesList = Array.isArray(data.data) ? data.data : [];
+      const moviesList = Array.isArray(data.data) && data.data.length > 0 ? data.data : MOCK_MOVIES;
       setPageMovies(moviesList);
       setTotalPages(data.last_page || 1);
       
-      // Seed allMovies
       setAllMovies(prev => {
         const map = new Map(prev.map(m => [m.id, m]));
         moviesList.forEach(m => map.set(m.id, m));
         return Array.from(map.values());
       });
     } catch (err) {
-      console.warn('API fetch failed, utilizing fallback dataset:', err);
-      setError('Could not fetch live API data. Showing cached demo catalog.');
+      console.warn('Live API unavailable or timed out. Swapping to instant demo catalog:', err);
+      // Fast graceful fallback
       setPageMovies(MOCK_MOVIES);
       setAllMovies(MOCK_MOVIES);
       setTotalPages(1);
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   }, []);
@@ -57,8 +64,12 @@ export function useMovies() {
   const fetchAllPages = useCallback(async () => {
     if (isFetchingAll) return;
     setIsFetchingAll(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
     try {
-      const firstRes = await fetch(`${API_BASE_URL}?page=1`);
+      const firstRes = await fetch(`${API_BASE_URL}?page=1`, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!firstRes.ok) throw new Error('API unavailable');
       const firstData: PaginatedMovieResponse = await firstRes.json();
       const lastPage = firstData.last_page || 1;
@@ -85,6 +96,7 @@ export function useMovies() {
     } catch {
       setAllMovies(MOCK_MOVIES);
     } finally {
+      clearTimeout(timeoutId);
       setIsFetchingAll(false);
     }
   }, [isFetchingAll]);
