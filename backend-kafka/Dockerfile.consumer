@@ -1,0 +1,20 @@
+# Multi-stage production build for Go Kafka Consumer Microservice
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o consumer-service ./cmd/consumer
+
+FROM alpine:3.19 AS runner
+
+RUN apk add --no-cache ca-certificates tzdata
+
+WORKDIR /app
+
+COPY --from=builder /app/consumer-service .
+
+CMD ["./consumer-service"]

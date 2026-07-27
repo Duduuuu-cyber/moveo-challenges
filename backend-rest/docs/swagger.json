@@ -1,0 +1,72 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Moveo.AI Task Management REST API",
+    "description": "Production-grade Task Management API with authentication, pagination, and filtering.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/tasks": {
+      "get": {
+        "summary": "List all tasks",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["pending", "in-progress", "completed"] } },
+          { "name": "due_date", "in": "query", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": {
+          "200": { "description": "Paginated list of tasks" }
+        }
+      },
+      "post": {
+        "summary": "Create a new task",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "status"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "status": { "type": "string", "enum": ["pending", "in-progress", "completed"] },
+                  "due_date": { "type": "string", "format": "date-time" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Task created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "summary": "Get task by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Task details" },
+          "404": { "description": "Task not found" }
+        }
+      },
+      "put": {
+        "summary": "Update task",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Task updated successfully" }
+        }
+      },
+      "delete": {
+        "summary": "Delete task",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Task deleted successfully" }
+        }
+      }
+    }
+  }
+}

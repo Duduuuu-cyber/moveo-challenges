@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-service
+  namespace: default
+  labels:
+    app: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: devops-consumer:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: moveo-stack-config
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          # Bonus Point #3: Liveness probe monitoring process execution
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - consumer.py
+            initialDelaySeconds: 10
+            periodSeconds: 15

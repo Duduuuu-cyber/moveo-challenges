@@ -1,0 +1,29 @@
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Go / Binary output
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+task-api
+producer-service
+consumer-service
+moveo-integration-gateway
+
+# Python / DevOps
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

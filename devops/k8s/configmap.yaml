@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: moveo-stack-config
+  namespace: default
+data:
+  KAFKA_BROKER: "kafka-service:9092"
+  TOPIC_NAME: "moveo-challenge-topic"
+  ENV_NAME: "Production-Kubernetes"
+  PORT: "3000"
