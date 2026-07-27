@@ -20,7 +20,7 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="glass-card rounded-2xl p-5 animate-pulse flex gap-5">
             <div className="w-36 h-52 bg-slate-800 rounded-xl shrink-0" />
@@ -76,7 +76,7 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
       {movies.map((movie) => (
         <MovieCard key={movie.id} movie={movie} />
       ))}

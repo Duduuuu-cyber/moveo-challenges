@@ -23,14 +23,14 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
       layout
       transition={{ layout: { duration: 0.3, ease: 'easeInOut' } }}
       onClick={() => setIsExpanded(prev => !prev)}
-      className={`glass-card rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 flex flex-col h-full ${
+      className={`glass-card rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 flex flex-col h-auto ${
         isExpanded
           ? 'ring-2 ring-indigo-500/80 shadow-2xl shadow-indigo-500/10 bg-slate-900/90'
           : 'hover:-translate-y-1'
       }`}
       aria-expanded={isExpanded}
     >
-      <div className="p-4 sm:p-5 flex flex-col h-full justify-between">
+      <div className="p-4 sm:p-5 flex flex-col">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
           {/* Movie Poster */}
           <div className="relative w-full sm:w-32 h-44 sm:h-44 rounded-xl overflow-hidden shrink-0 bg-slate-950 shadow-md">
