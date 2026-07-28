@@ -6,16 +6,33 @@ A comprehensive repository containing 5 production-grade technical challenges en
 
 ## Quick Start & Interactive Master Launcher
 
-On Windows systems, you can launch any individual project, run development servers, or execute all unit test suites from a single interactive console using **`RUN_ALL_CHALLENGES.bat`**:
+### macOS / Linux (Apple Silicon ARM & x86_64)
+
+Make the scripts executable and run the master interactive launcher:
+
+```bash
+chmod +x *.sh
+./RUN_ALL_CHALLENGES.sh
+```
+
+#### macOS / Linux Direct Launchers:
+- **`./run_frontend.sh`**: Boots the React 19 + Vite development server (`http://localhost:5173`).
+- **`./run_backend_rest.sh`**: Runs the Golang Gin Task REST API (`http://localhost:8080`).
+- **`./run_backend_kafka.sh`**: Launches Kafka Producer REST API & Consumer analytics services.
+- **`./run_solutions_engineer.sh`**: Boots the Solutions Engineer Webhook Gateway (`http://localhost:8082`).
+
+### Windows
+
+On Windows systems, launch the interactive console:
 
 ```cmd
 RUN_ALL_CHALLENGES.bat
 ```
 
-### Direct Launcher Scripts:
+#### Windows Direct Launchers:
 - **`run_frontend.bat`**: Boots the React 19 + Vite development server (`http://localhost:5173`).
 - **`run_backend_rest.bat`**: Runs the Golang Gin Task REST API (`http://localhost:8080`).
-- **`run_backend_kafka.bat`**: Launches Kafka Producer REST API & Consumer analytics services via `docker-compose`.
+- **`run_backend_kafka.bat`**: Launches Kafka Producer REST API & Consumer analytics services.
 - **`run_solutions_engineer.bat`**: Boots the Solutions Engineer Webhook Gateway (`http://localhost:8082`).
 
 ---
