@@ -27,7 +27,7 @@ func main() {
 		c.JSON(200, gin.H{"status": "healthy", "service": "Moveo Integration Gateway"})
 	})
 
-	log.Printf("🚀 Moveo.AI Integration Gateway running on port :%s", port)
+	log.Printf("Moveo.AI Integration Gateway running on port :%s", port)
 	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Gateway server error: %v", err)
 	}

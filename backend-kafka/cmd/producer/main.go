@@ -112,7 +112,7 @@ func main() {
 
 	// Graceful Shutdown Handler
 	go func() {
-		log.Printf("🚀 Kafka Producer REST API running on port :%s (Topic: %s)", port, topic)
+		log.Printf("Kafka Producer REST API running on port :%s (Topic: %s)", port, topic)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v", err)
 		}
@@ -121,12 +121,12 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("🛑 Shutdown signal received. Closing Producer microservice...")
+	log.Println("Shutdown signal received. Closing Producer microservice...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatalf("Server forced to shutdown: %v", err)
 	}
-	log.Println("✅ Producer microservice gracefully stopped.")
+	log.Println("Producer microservice gracefully stopped.")
 }

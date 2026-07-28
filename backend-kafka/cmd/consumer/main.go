@@ -46,11 +46,11 @@ func main() {
 			log.Printf("[Consumer Warning] Postgres connection error: %v. Falling back to MemoryStore.", err)
 			dbStore = store.NewMemoryAnalyticsStore()
 		} else {
-			log.Println("✅ Connected to PostgreSQL analytics database.")
+			log.Println("Connected to PostgreSQL analytics database.")
 			dbStore = pgStore
 		}
 	} else {
-		log.Println("ℹ️ No POSTGRES_CONN_STR provided. Using in-memory analytics store.")
+		log.Println("No POSTGRES_CONN_STR provided. Using in-memory analytics store.")
 		dbStore = store.NewMemoryAnalyticsStore()
 	}
 
@@ -74,7 +74,7 @@ func main() {
 	var wg sync.WaitGroup
 
 	// Bonus Point #1: Launch horizontal goroutine worker pool for concurrent transformations
-	log.Printf("🚀 Starting Consumer Service with %d worker goroutines (Group: %s)", workerCount, groupID)
+	log.Printf("Starting Consumer Service with %d worker goroutines (Group: %s)", workerCount, groupID)
 	for i := 1; i <= workerCount; i++ {
 		wg.Add(1)
 		workerID := i
@@ -141,9 +141,9 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 	sig := <-sigChan
 
-	log.Printf("🛑 Received shutdown signal (%v). Commencing graceful shutdown of Consumer...", sig)
+	log.Printf("Received shutdown signal (%v). Commencing graceful shutdown of Consumer...", sig)
 	cancel()
 	close(messageChan)
 	wg.Wait()
-	log.Println("✅ Consumer microservice gracefully stopped.")
+	log.Println("Consumer microservice gracefully stopped.")
 }

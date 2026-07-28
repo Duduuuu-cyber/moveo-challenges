@@ -20,7 +20,7 @@ const htmlContent = `
 </head>
 <body>
     <div class="card">
-        <h1>🚀 Frontend Service is Running</h1>
+        <h1>Frontend Service is Running</h1>
         <p>Environment: <span class="badge">${ENV_NAME}</span></p>
         <p><i>If you see this, your Ingress/Service orchestration is working correctly.</i></p>
     </div>
