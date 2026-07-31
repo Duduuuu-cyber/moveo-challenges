@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -44,7 +45,7 @@ func (m *MemoryAnalyticsStore) SaveAnalytics(uniqueUserCount int64, pageViewCoun
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	m.totalPageViews += pageViewCount
+	m.totalPageViews = pageViewCount
 	m.lastUpdated = time.Now()
 	return nil
 }
@@ -71,12 +72,28 @@ func NewPostgresStore(connStr string) (*PostgresStore, error) {
 		return nil, fmt.Errorf("failed to open postgres: %w", err)
 	}
 
-	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("failed to ping postgres: %w", err)
+	var pingErr error
+	backoff := 1 * time.Second
+	for attempt := 1; attempt <= 30; attempt++ {
+		pingErr = db.Ping()
+		if pingErr == nil {
+			break
+		}
+		log.Printf("[PostgresStore] Waiting for PostgreSQL readiness (attempt %d/30): %v...", attempt, pingErr)
+		time.Sleep(backoff)
+		if backoff < 3*time.Second {
+			backoff += 500 * time.Millisecond
+		}
+	}
+
+	if pingErr != nil {
+		db.Close()
+		return nil, fmt.Errorf("failed to ping postgres after 30 attempts: %w", pingErr)
 	}
 
 	store := &PostgresStore{db: db}
 	if err := store.initTable(); err != nil {
+		db.Close()
 		return nil, err
 	}
 
@@ -104,8 +121,8 @@ func (p *PostgresStore) initTable() error {
 func (p *PostgresStore) SaveAnalytics(uniqueUserCount int64, pageViewCount int64) error {
 	query := `
 	UPDATE user_analytics
-	SET total_users = total_users + $1,
-	    total_page_views = total_page_views + $2,
+	SET total_users = $1,
+	    total_page_views = $2,
 	    last_updated = $3
 	WHERE id = 1;
 	`

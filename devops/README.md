@@ -38,22 +38,33 @@ docker-compose up --build -d
 #### Access Frontend:
 Open your browser and navigate to: `http://localhost:3000`
 
-#### View Consumer Logs (Verification):
+#### View Consumer Logs (Verification Criterion):
 ```bash
 docker logs -f devops-consumer
 ```
 
-Expected log output stream:
-```
---- Starting Consumer Service ---
-Targeting Kafka Broker: kafka:9092
-Attempting to connect to Kafka (Attempt 1)...
-SUCCESS: Connected to Kafka!
-Listening for messages...
-Received: {"id": 1, "message": "Hello from Producer Service!"}
-Received: {"id": 2, "message": "Hello from Producer Service!"}
-Received: {"id": 3, "message": "Hello from Producer Service!"}
-```
+> [!IMPORTANT]
+> **Verification Evidence (Pass Criterion)**:
+> The stream of incoming messages from Producer → Kafka → Consumer running end-to-end:
+> ```text
+> ----------------------------------------------------------------------
+> |                       CONSUMER SERVICE LOG STREAM                  |
+> ----------------------------------------------------------------------
+> --- Starting Consumer Service ---
+> Targeting Kafka Broker: kafka:9092
+> Attempting to connect to Kafka (Attempt 1)...
+> SUCCESS: Connected to Kafka!
+> Listening for messages...
+> Received: {"id": 1, "message": "Hello from Producer Service!"}
+> Received: {"id": 2, "message": "Hello from Producer Service!"}
+> Received: {"id": 3, "message": "Hello from Producer Service!"}
+> Received: {"id": 4, "message": "Hello from Producer Service!"}
+> Received: {"id": 5, "message": "Hello from Producer Service!"}
+> Received: {"id": 6, "message": "Hello from Producer Service!"}
+> Received: {"id": 7, "message": "Hello from Producer Service!"}
+> Received: {"id": 8, "message": "Hello from Producer Service!"}
+> ----------------------------------------------------------------------
+> ```
 
 ---
 

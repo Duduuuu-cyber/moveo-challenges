@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Calendar, Users, ChevronDown, Film, UserCheck } from 'lucide-react';
 import type { Movie } from '../types/movie';
 
 interface MovieCardProps {
@@ -32,7 +31,6 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     >
       <div className="p-4 sm:p-5 flex flex-col">
         <div className="flex flex-col sm:flex-row gap-4 items-start">
-          {/* Movie Poster */}
           <div className="relative w-full sm:w-32 h-44 sm:h-44 rounded-xl overflow-hidden shrink-0 bg-slate-950 shadow-md">
             <img
               src={posterUrl}
@@ -41,56 +39,47 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />
-            {/* Rating Badge */}
             <div className="absolute top-2 right-2 bg-slate-950/85 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-700/50 flex items-center gap-1 text-xs font-bold text-amber-400">
-              <Star className="w-3 h-3 fill-amber-400" />
               <span>{rating}</span>
             </div>
           </div>
 
-          {/* Core Info */}
           <div className="flex-1 min-w-0 w-full">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md mb-1.5 border border-indigo-500/20">
-                  <Calendar className="w-3 h-3" />
                   {releaseYear}
                 </span>
-                <h3 className="text-base font-bold text-slate-100 leading-snug group-hover:text-indigo-300 transition-colors line-clamp-2">
+                <h3 className="text-base font-bold text-slate-100 leading-snug transition-colors line-clamp-2">
                   {movie.original_title}
                 </h3>
               </div>
 
-              {/* Expand Indicator */}
               <button
                 className={`p-1.5 rounded-lg bg-slate-800/80 text-slate-400 hover:text-white transition-all duration-300 shrink-0 ${
                   isExpanded ? 'rotate-180 bg-indigo-600 text-white' : ''
                 }`}
                 aria-label={isExpanded ? 'Collapse movie details' : 'Expand movie details'}
               >
-                <ChevronDown className="w-4 h-4" />
+                {isExpanded ? '?' : '?'}
               </button>
             </div>
 
-            {/* Overview Snippet */}
             <p className={`mt-2 text-xs text-slate-300/90 leading-relaxed ${isExpanded ? '' : 'line-clamp-3'}`}>
               {movie.overview || 'No synopsis available for this movie title.'}
             </p>
 
-            {/* Tap to expand prompt if not expanded */}
             {!isExpanded && (
               <div className="mt-3 flex items-center justify-between text-[11px] text-indigo-400 font-medium pt-2 border-t border-slate-800/60">
                 <span className="flex items-center gap-1">
-                  <Users className="w-3 h-3" />
-                  <span>{mainCasts.length > 0 ? `${mainCasts.length}+ Cast Members` : 'Details'}</span>
+                  {mainCasts.length > 0 ? `${mainCasts.length}+ Cast Members` : 'Details'}
                 </span>
-                <span className="text-slate-400 text-[10px]">Expand &rarr;</span>
+                <span className="text-slate-400 text-[10px]">Expand ?</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* In-Place Expanded Detail View */}
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -101,11 +90,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
               className="overflow-hidden"
             >
               <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-3">
-                {/* Cast Section */}
                 <div>
-                  <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5 mb-2.5">
-                    <Users className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>Main Cast Members</span>
+                  <h4 className="text-xs font-bold text-slate-200 mb-2.5">
+                    Main Cast Members
                   </h4>
 
                   {mainCasts.length > 0 ? (
@@ -126,7 +113,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
                                 }}
                               />
                             ) : (
-                              <UserCheck className="w-3.5 h-3.5" />
+                              <span>?</span>
                             )}
                           </div>
                           <div className="min-w-0">
@@ -145,12 +132,8 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
                   )}
                 </div>
 
-                {/* Additional Metadata Footer */}
                 <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800/40 gap-2">
-                  <span className="flex items-center gap-1">
-                    <Film className="w-3 h-3 text-indigo-400" />
-                    Record ID: <strong className="text-slate-200">{movie.id}</strong>
-                  </span>
+                  <span className="text-slate-400">Record ID: <strong className="text-slate-200">{movie.id}</strong></span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

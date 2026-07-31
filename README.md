@@ -1,6 +1,6 @@
 # Moveo.AI Technical Challenges Master Suite
 
-A comprehensive repository containing 5 production-grade technical challenges engineered for **Moveo.AI**, covering Frontend, REST Backend, Kafka Streaming Analytics, DevOps & Kubernetes Infrastructure, and Solutions Engineering Architecture.
+A comprehensive repository containing 5 production-grade technical challenges engineered for Moveo.AI, covering Frontend, REST Backend, Kafka Streaming Analytics, DevOps & Kubernetes Infrastructure, and Solutions Engineering Architecture.
 
 ---
 
@@ -92,5 +92,4 @@ go test -v ./...
 
 ## License & Attribution
 
-Developed for **Moveo.AI Technical Evaluation**. All rights reserved.
-
+Developed for Moveo.AI Technical Evaluation.

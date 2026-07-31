@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"sort"
 	"sync"
 	"time"
 
@@ -68,6 +69,16 @@ func (r *MemoryTaskRepository) GetAll(filter models.TaskFilter) ([]models.Task, 
 		}
 		filtered = append(filtered, *task)
 	}
+
+	// Deterministic sorting before pagination to ensure unique, consistent ordering across pages
+	sort.Slice(filtered, func(i, j int) bool {
+		tI := filtered[i].CreatedAt.UnixNano()
+		tJ := filtered[j].CreatedAt.UnixNano()
+		if tI == tJ {
+			return filtered[i].ID < filtered[j].ID
+		}
+		return tI < tJ
+	})
 
 	total := len(filtered)
 	page := filter.Page

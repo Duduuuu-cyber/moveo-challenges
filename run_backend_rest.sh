@@ -1,16 +1,6 @@
 #!/usr/bin/env bash
+set -e
+cd "$(dirname "$0")/backend-rest"
 
-# Moveo.AI - Backend REST API Launcher for macOS / Linux
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-echo "============================================================"
-echo "     MOVEO.AI - BACKEND REST API LAUNCHER (GOLANG)"
-echo "============================================================"
-echo ""
-
-cd "$SCRIPT_DIR/backend-rest" || exit 1
-
-echo "Running Go REST API server on http://localhost:8080..."
-echo ""
-
+echo "Starting Moveo.AI backend REST API on http://localhost:8080"
 go run cmd/api/main.go

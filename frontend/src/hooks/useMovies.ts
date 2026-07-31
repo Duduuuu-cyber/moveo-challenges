@@ -15,6 +15,8 @@ export function useMovies() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<'rating' | 'year' | 'title'>('rating');
 
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(false);
+
   // Utility to extract year
   const getReleaseYear = (dateStr: string): number => {
     if (!dateStr) return 0;
@@ -42,6 +44,7 @@ export function useMovies() {
       const moviesList = Array.isArray(data.data) && data.data.length > 0 ? data.data : MOCK_MOVIES;
       setPageMovies(moviesList);
       setTotalPages(data.last_page || 1);
+      setIsDemoMode(false);
       
       setAllMovies(prev => {
         const map = new Map(prev.map(m => [m.id, m]));
@@ -50,7 +53,9 @@ export function useMovies() {
       });
     } catch (err) {
       console.warn('Live API unavailable or timed out. Swapping to instant demo catalog:', err);
-      // Fast graceful fallback
+      const errMsg = err instanceof Error ? err.message : 'API Network Error';
+      setError(`Live API unavailable (${errMsg}). Showing demo movie catalog.`);
+      setIsDemoMode(true);
       setPageMovies(MOCK_MOVIES);
       setAllMovies(MOCK_MOVIES);
       setTotalPages(1);
@@ -65,7 +70,7 @@ export function useMovies() {
     if (isFetchingAll) return;
     setIsFetchingAll(true);
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     try {
       const firstRes = await fetch(`${API_BASE_URL}?page=1`, { signal: controller.signal });
@@ -77,7 +82,7 @@ export function useMovies() {
 
       if (lastPage > 1) {
         const pagePromises = [];
-        for (let p = 2; p <= Math.min(lastPage, 5); p++) {
+        for (let p = 2; p <= lastPage; p++) {
           pagePromises.push(
             fetch(`${API_BASE_URL}?page=${p}`)
               .then(res => res.json())
@@ -108,10 +113,10 @@ export function useMovies() {
 
   // Fetch all data for client-side search over complete dataset
   useEffect(() => {
-    if (searchTerm.trim().length > 0 && allMovies.length < 20 && !isFetchingAll) {
+    if (searchTerm.trim().length > 0 && !isFetchingAll && !isDemoMode) {
       fetchAllPages();
     }
-  }, [searchTerm, allMovies.length, isFetchingAll, fetchAllPages]);
+  }, [searchTerm, isFetchingAll, isDemoMode, fetchAllPages]);
 
   // Processed movies list
   const displayedMovies = useMemo(() => {
@@ -141,10 +146,15 @@ export function useMovies() {
     return filtered;
   }, [searchTerm, allMovies, pageMovies, sortBy]);
 
+  const retry = useCallback(() => {
+    fetchPage(currentPage);
+  }, [fetchPage, currentPage]);
+
   return {
     movies: displayedMovies,
     loading,
     error,
+    isDemoMode,
     currentPage,
     totalPages,
     setCurrentPage,
@@ -154,6 +164,7 @@ export function useMovies() {
     setSortBy,
     isSearchMode: searchTerm.trim().length > 0,
     totalResults: displayedMovies.length,
-    fetchAllPages
+    fetchAllPages,
+    retry
   };
 }

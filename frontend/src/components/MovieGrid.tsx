@@ -1,7 +1,6 @@
 import React from 'react';
 import { MovieCard } from './MovieCard';
 import type { Movie } from '../types/movie';
-import { Film, AlertCircle, RefreshCw } from 'lucide-react';
 
 interface MovieGridProps {
   movies: Movie[];
@@ -9,6 +8,7 @@ interface MovieGridProps {
   error: string | null;
   searchTerm: string;
   onClearSearch: () => void;
+  onRetry?: () => void;
 }
 
 export const MovieGrid: React.FC<MovieGridProps> = ({
@@ -16,7 +16,8 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
   loading,
   error,
   searchTerm,
-  onClearSearch
+  onClearSearch,
+  onRetry
 }) => {
   if (loading) {
     return (
@@ -36,20 +37,19 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
     );
   }
 
-  if (error) {
+  if (error && movies.length === 0) {
     return (
       <div className="glass-panel border-amber-500/30 bg-amber-500/5 rounded-2xl p-6 text-center max-w-xl mx-auto my-8">
         <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-3">
-          <AlertCircle className="w-6 h-6" />
+          <span className="text-sm font-bold">!</span>
         </div>
         <h3 className="text-lg font-bold text-amber-200 mb-1">API Notice</h3>
         <p className="text-sm text-slate-300 mb-4">{error}</p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={onRetry || (() => window.location.reload())}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-sm font-semibold transition-colors"
         >
-          <RefreshCw className="w-4 h-4" />
-          <span>Retry Connection</span>
+          Retry Connection
         </button>
       </div>
     );
@@ -59,7 +59,7 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
     return (
       <div className="glass-panel rounded-2xl p-12 text-center max-w-md mx-auto my-12 border-slate-800">
         <div className="w-16 h-16 rounded-2xl bg-slate-800/80 text-slate-400 flex items-center justify-center mx-auto mb-4">
-          <Film className="w-8 h-8 opacity-40" />
+          <span className="text-sm">?</span>
         </div>
         <h3 className="text-lg font-bold text-slate-200 mb-1">No Movies Found</h3>
         <p className="text-xs text-slate-400 mb-6">
@@ -76,10 +76,32 @@ export const MovieGrid: React.FC<MovieGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-      {movies.map((movie) => (
-        <MovieCard key={movie.id} movie={movie} />
-      ))}
+    <div className="space-y-6">
+      {error && (
+        <div className="glass-panel border-amber-500/30 bg-amber-500/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+              <span className="text-sm font-bold">!</span>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-amber-200">API Connection Notice</h4>
+              <p className="text-xs text-slate-300">{error}</p>
+            </div>
+          </div>
+          <button
+            onClick={onRetry || (() => window.location.reload())}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 text-xs font-semibold transition-colors shrink-0"
+          >
+            Retry Connection
+          </button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+        {movies.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
+      </div>
     </div>
   );
 };
